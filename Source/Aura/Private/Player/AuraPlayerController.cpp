@@ -2,12 +2,23 @@
 
 
 #include "Player/AuraPlayerController.h"
+
+#include "AbilitySystemComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Interaction/EnemyInterface.h"
+#include "Player/AuraPlayerState.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
+}
+
+void AAuraPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	CurseTrace();
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -50,5 +61,24 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 		FVector2d InputAxisVector = InputActionValue.Get<FVector2D>();
 		ControlledPawn->AddMovementInput(ForwardVector, InputAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightVector, InputAxisVector.X);
+	}
+}
+
+void AAuraPlayerController::CurseTrace()
+{
+	FHitResult CursorHitResult;
+	GetHitResultUnderCursor(ECC_Pawn, true, CursorHitResult);
+	if (!CursorHitResult.bBlockingHit) return;
+
+	LastActor = CurrentActor;
+	CurrentActor = Cast<IEnemyInterface>(CursorHitResult.GetActor());
+	
+	if (CurrentActor && CurrentActor != LastActor)
+	{
+		if (LastActor) LastActor->UnHighlightActor();
+		CurrentActor->HighlightActor();
+	} else if (CurrentActor == nullptr && LastActor)
+	{
+		LastActor->UnHighlightActor();
 	}
 }
