@@ -107,3 +107,29 @@ Once again `AbilitySystemComponent` and `AttributeSet` appear in our `AuraPlayer
 
 ## 2. Gameplay Ability System (GAS)
 
+### 2.1 Understand the Basics of GAS
+
+### 2.2 Create AbilitySystemComponent and AttributeSet
+
+### 2.3 Create Effect Actor
+
+## 3. UI Architecture
+
+### 3.1 Understand the Model-View-Controller Pattern
+
+We want UI to display the runtime data of a game. There should be a way for UI to access the data. Firstly and easily, we can make UI directly interact with other gameplay objects, which may lead to chaos as our game becomes complex. Thus a better way of exchanging data is presented, that is to put a controller between UI and game logic. As is shown below, the presence of controller decouples the codes between the View layer (UI) and the Model layer (game logic).  
+
+```mermaid
+graph LR
+	User[🧑 User Input]
+    View[🖼️ View<br/>User Interface]
+    Controller[🎮 Widget Controller]
+    Model[🗃️ Model<br/>Game Logic and Data]
+
+	User -->|Click/Enter Text/...| View
+    View -->|Input Detected| Controller
+    Controller -->|Get/Set| Model
+    Model -->|Data Changed| Controller
+    Controller -->|Notify Changed Data| View
+```
+
