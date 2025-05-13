@@ -133,3 +133,9 @@ graph LR
     Controller -->|Notify Changed Data| View
 ```
 
+### 3.2 Set Up HUD
+
+### 3.3 Delegate Functions to Update Attribute Data
+
+## 4. Gameplay Effects
+

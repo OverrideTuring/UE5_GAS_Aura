@@ -3,11 +3,13 @@
 
 #include "Player/AuraPlayerController.h"
 
-#include "AbilitySystemComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 #include "Player/AuraPlayerState.h"
+#include "UI/HUD/AuraHUD.h"
+
+class AAuraHUD;
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -18,7 +20,7 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	CurseTrace();
+	CursorTrace();
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -26,18 +28,19 @@ void AAuraPlayerController::BeginPlay()
 	Super::BeginPlay();
 	check(AuraContext);
 
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem);
+	// Set Up EnhancedInputSubsystem
+	if (auto Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(AuraContext, 0);
 
-	Subsystem->AddMappingContext(AuraContext, 0);
+		bShowMouseCursor = true;
+		DefaultMouseCursor = EMouseCursor::Default;
 
-	bShowMouseCursor = true;
-	DefaultMouseCursor = EMouseCursor::Default;
-
-	FInputModeGameAndUI InputModeData;
-	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-	InputModeData.SetHideCursorDuringCapture(false);
-	SetInputMode(InputModeData);
+		FInputModeGameAndUI InputModeData;
+		InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		InputModeData.SetHideCursorDuringCapture(false);
+		SetInputMode(InputModeData);
+	}
 }
 
 void AAuraPlayerController::SetupInputComponent()
@@ -64,7 +67,7 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	}
 }
 
-void AAuraPlayerController::CurseTrace()
+void AAuraPlayerController::CursorTrace()
 {
 	FHitResult CursorHitResult;
 	GetHitResultUnderCursor(ECC_Pawn, true, CursorHitResult);
