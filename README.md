@@ -139,3 +139,9 @@ graph LR
 
 ## 4. Gameplay Effects
 
+### 4.1 Overview the gameplay effects
+
+### 4.2 Use different gameplay effects
+
+## 5. Gameplay Tags
+
